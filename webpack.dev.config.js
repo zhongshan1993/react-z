@@ -1,4 +1,5 @@
 const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 const distPath = path.join(__dirname, './dist')
 
@@ -30,6 +31,12 @@ module.exports = {
       }
     ]
   },
+  plugins: [
+    new HtmlWebpackPlugin({
+      filename: 'index.html',
+      template: path.join(__dirname, 'src/index.html')
+    })
+  ],
   devServer: {
     port: 8080,
     contentBase: distPath,
