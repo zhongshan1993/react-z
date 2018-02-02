@@ -9,7 +9,6 @@ class UserInfo extends Component {
       isLoading,
       errorMsg
     } = this.props.userInfo
-
     return (
       <div>
         {

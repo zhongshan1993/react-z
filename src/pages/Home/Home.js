@@ -19,7 +19,7 @@ export default class Home extends Component {
   render() {
     return (
       <div>
-        <h1>
+        <h1 className='page-box'>
           this is home haha!11
         </h1>
         <div>

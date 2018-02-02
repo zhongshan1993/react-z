@@ -22,15 +22,23 @@ function getUserInfoFail() {
 }
 
 export function getUserInfo() {
-  return function(dispatch) {
-    dispatch(getUserInfoRequest())
+  // return function(dispatch) {
+  //   dispatch(getUserInfoRequest())
 
-    return fetch('/api/user.json').then(respone => {
-      return respone.json()
-    }).then(json => {
-      dispatch(getUserInfoSuccess(json))
-    }).catch(() => {
-      dispatch(getUserInfoFail())
-    })
+  //   return fetch('/api/user.json').then(respone => {
+  //     return respone.json()
+  //   }).then(json => {
+  //     dispatch(getUserInfoSuccess(json))
+  //   }).catch(() => {
+  //     dispatch(getUserInfoFail())
+  //   })
+  // }
+  return {
+    types: [GET_USER_INFO_REQUEST, GET_USER_INFO_SUCCESS, GET_USER_INFO_FAIL],
+    promise: client => client.get('/api/user.json'),
+    // afterSuccess: (dispatch, getState, response) => {
+
+    // },
+    // otherData: {}
   }
 }

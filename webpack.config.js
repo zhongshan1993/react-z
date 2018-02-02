@@ -1,6 +1,9 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
+const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin')
 
 const distPath = path.join(__dirname, './dist')
 
@@ -8,7 +11,6 @@ module.exports = {
   // 入口
   entry: {
     app: [
-      'react-hot-loader/patch',
       path.join(__dirname, 'src/index.js')
     ],
     vendor: ['react', 'react-router-dom', 'redux', 'react-redux', 'react-dom']
@@ -16,27 +18,31 @@ module.exports = {
   // 输出到 dist 文件夹
   output: {
     path: distPath,
-    filename: '[name].[hash].js',
-    chunkFilename: '[name].[chunkhash].js'
+    filename: '[name].[chunkHash].js',
+    chunkFilename: '[name].[chunkhash].js',
+    publicPath: '/'
   },
   module: {
     rules: [
       {
         test: /\.js$/,
-        use: ['babel-loader?cacheDirectory=true'],
+        use: ['babel-loader'],
         include: path.join(__dirname, 'src')
       },
       {
         test: /\.js[x]?$/,
         enforce: 'pre',
         use: [{
-          loader: 'eslint-loader?fix=false'
+          loader: 'eslint-loader?fix=true'
         }],
         include: path.resolve(__dirname, './src'),
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader']
+        use: ExtractTextWebpackPlugin.extract({
+          fallback: 'style-loader',
+          use: 'css-loader'
+        })
       },
       {
         test: /\.(jpg|png|gif)$/,
@@ -51,22 +57,33 @@ module.exports = {
     ]
   },
   plugins: [
+    new CleanWebpackPlugin(['dist'], {
+      exclude:  ['api'],
+    }),
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify('production')
+      }
+    }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: path.join(__dirname, 'src/index.html')
     }),
+    new ExtractTextWebpackPlugin({
+      filename: '[name].[contenthash:5].css',
+      allChunks: true
+    }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor'
-    })
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'runtime'
+    }),
+    new webpack.HashedModuleIdsPlugin(),
+    new UglifyJSPlugin()
   ],
-  devServer: {
-    port: 8080,
-    contentBase: distPath,
-    historyApiFallback: true,
-    host: '0.0.0.0'
-  },
   // 详细报错信息
-  devtool: 'inline-source-map',
+  devtool: 'cheap-module-source-map',
   resolve: {
     alias: {
       pages: path.join(__dirname, 'src/pages'),
