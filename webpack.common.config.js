@@ -8,6 +8,7 @@ const srcPath = path.join(__dirname, './src')
 const commonConfig = {
   entry: {
     app: [
+      'babel-polyfill',
       path.join(__dirname, 'src/index.js')
     ],
     vendor: ['react', 'react-router-dom', 'redux', 'react-redux', 'react-dom']
