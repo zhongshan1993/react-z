@@ -2,18 +2,18 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import {AppContainer} from 'react-hot-loader'
 import {Provider} from 'react-redux'
-
 import store from './redux/store'
-import getRouter from 'router/router'
+import { BrowserRouter as Router } from 'react-router-dom'
+import App from 'components/App/App'
 
 // 初始化
-renderWidthHotReload(getRouter())
+renderWidthHotReload(App)
 
 // 热更新
 if (module.hot) {
-  module.hot.accept('./router/router.js', () => {
-    const getRouter = require('./router/router').default
-    renderWidthHotReload(getRouter())
+  module.hot.accept('components/App/App', () => {
+    const NextApp = require('components/App/App').default
+    renderWidthHotReload(NextApp)
   })
 }
 
@@ -21,7 +21,9 @@ function renderWidthHotReload(RootElement) {
   ReactDOM.render(
     <AppContainer>
       <Provider store={store}>
-        {RootElement} 
+        <Router>
+          <RootElement />
+        </Router>
       </Provider>
     </AppContainer>,
     document.getElementById('app')
